@@ -82,7 +82,7 @@ impl<T> LinkedList<T> {
 
 impl<T> Display for LinkedList<T>
 where
-    T: Display,
+    T: Display;
 {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self.start {
