@@ -16,6 +16,6 @@ fn main() {
     }
 }
 
-fn is_a_color_word(attempt: &str) -> 啊飒飒打撒 {
+fn is_a_color_word(attempt: &str) -> bool {
     attempt == "green" || attempt == "blue" || attempt == "red"
 }
