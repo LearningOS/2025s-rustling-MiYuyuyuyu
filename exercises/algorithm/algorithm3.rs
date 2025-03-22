@@ -5,8 +5,25 @@
 */
 // I AM DONE
 
-fn sort<T>(array: &mut [T]){
+
+fn sort<T>(array: &mut [T])
+where
+    T:Ord
+{
 	//TODO
+    let n = array.len();
+    for i in 0..n{
+        let mut temp = false;
+        for j in i..n {
+            if array[i] > array[j]{
+                array.swap(i, j);
+                temp=true;
+            }
+        }
+        if !temp {
+            break;
+        } 
+    }
 }
 #[cfg(test)]
 mod tests {
