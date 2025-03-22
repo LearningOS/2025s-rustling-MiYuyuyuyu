@@ -27,32 +27,28 @@ impl Graph {
 
     // Perform a breadth-first search on the graph, return the order of visited nodes
     fn bfs_with_return(&self, start: usize) -> Vec<usize> {
-		//TODO
         let mut que: VecDeque<usize> = VecDeque::new();
         let n = self.adj.len();
-        let mut visit:Vec<bool> = vec![false;n];
+        let mut visit: Vec<bool> = vec![false; n];
         let mut visit_order = vec![];
-
-
-        visit[start]=true;
-        visit_order.push(start);
-
-        for j in &self.adj[start]{
-            if !visit[*j] {
-                que.push_back(*j);
-            }
-        }
-        
-        while !que.is_empty() {
-            let k = que.pop_back().unwrap();
-            visit_order.push(k);
-            for j in &self.adj[k]{
-                if !visit[*j] {
-                    que.push_back(*j);
+    
+        // 标记起点为已访问，并将其加入队列
+        visit[start] = true;
+        que.push_back(start);
+    
+        // 开始 BFS
+        while let Some(node) = que.pop_front() {
+            visit_order.push(node); // 记录访问顺序
+    
+            // 遍历当前节点的所有邻居
+            for &neighbor in &self.adj[node] {
+                if !visit[neighbor] {
+                    visit[neighbor] = true; // 立即标记为已访问
+                    que.push_back(neighbor); // 加入队列
                 }
             }
         }
-
+    
         visit_order
     }
 }
