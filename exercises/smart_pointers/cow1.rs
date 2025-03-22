@@ -49,7 +49,7 @@ mod tests {
         let mut input = Cow::from(&slice[..]);
         match abs_all(&mut input) {
             // TODO
-            Cow::Owned(_) => Ok(()),
+            Cow::Borrowed(_) => Ok(()),
             _ => Err("Expected owned value"),
         }
     }
