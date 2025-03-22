@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+// I AM DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -70,19 +70,45 @@ impl<T> LinkedList<T> {
         }
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+    where 
+        T:PartialOrd+Ord+Clone
 	{
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        let mut merged_list = LinkedList::new();
+        let mut current_a = list_a.start;
+        let mut current_b = list_b.start;
+        while let (Some(node_a), Some(node_b)) = (current_a, current_b) {
+            let val_a = unsafe { &(*node_a.as_ptr()).val };
+            let val_b = unsafe { &(*node_b.as_ptr()).val };
+
+            if val_a <= val_b {
+                merged_list.add(val_a.clone());
+                current_a = unsafe { (*node_a.as_ptr()).next };
+            } else {
+                merged_list.add(val_b.clone());
+                current_b = unsafe { (*node_b.as_ptr()).next };
+            }
         }
+
+        // 将剩余的节点从list_a追加到merged_list
+        while let Some(node_a) = current_a {
+            merged_list.add(unsafe { (*node_a.as_ptr()).val.clone() });
+            current_a = unsafe { (*node_a.as_ptr()).next };
+        }
+
+        // 将剩余的节点从list_b追加到merged_list
+        while let Some(node_b) = current_b {
+            merged_list.add(unsafe { (*node_b.as_ptr()).val.clone() });
+            current_b = unsafe { (*node_b.as_ptr()).next };
+        }
+
+        merged_list
 	}
 }
 
 impl<T> Display for LinkedList<T>
 where
-    T: Display;
+    T: Display,
 {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self.start {
