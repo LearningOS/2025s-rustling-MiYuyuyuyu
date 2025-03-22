@@ -2,47 +2,79 @@
 	graph
 	This problem requires you to implement a basic graph functio
 */
-// I AM NOT DONE
+// I AM DONE
 
 use std::collections::{HashMap, HashSet};
 use std::fmt;
+
 #[derive(Debug, Clone)]
 pub struct NodeNotInGraph;
+
 impl fmt::Display for NodeNotInGraph {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "accessing a node that is not in the graph")
     }
 }
+
 pub struct UndirectedGraph {
     adjacency_table: HashMap<String, Vec<(String, i32)>>,
 }
+
 impl Graph for UndirectedGraph {
     fn new() -> UndirectedGraph {
         UndirectedGraph {
             adjacency_table: HashMap::new(),
         }
     }
+
     fn adjacency_table_mutable(&mut self) -> &mut HashMap<String, Vec<(String, i32)>> {
         &mut self.adjacency_table
     }
+
     fn adjacency_table(&self) -> &HashMap<String, Vec<(String, i32)>> {
         &self.adjacency_table
     }
+
+    fn add_node(&mut self, node: &str) -> bool {
+        let adjacency_table = self.adjacency_table_mutable();
+        if adjacency_table.contains_key(node) {
+            false
+        } else {
+            adjacency_table.insert(node.to_string(), Vec::new());
+            true
+        }
+    }
+
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
+        let (from, to, weight) = edge;
+
+        // 确保节点存在于图中
+        self.add_node(from);
+        self.add_node(to);
+
+        // 获取邻接表的可变引用
+        let adjacency_table = self.adjacency_table_mutable();
+
+        // 添加从 from 到 to 的边
+        adjacency_table
+            .get_mut(from)
+            .unwrap()
+            .push((to.to_string(), weight));
+
+        // 添加从 to 到 from 的边（无向图的对称性）
+        adjacency_table
+            .get_mut(to)
+            .unwrap()
+            .push((from.to_string(), weight));
     }
 }
+
 pub trait Graph {
     fn new() -> Self;
     fn adjacency_table_mutable(&mut self) -> &mut HashMap<String, Vec<(String, i32)>>;
     fn adjacency_table(&self) -> &HashMap<String, Vec<(String, i32)>>;
-    fn add_node(&mut self, node: &str) -> bool {
-        //TODO
-		true
-    }
-    fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
-    }
+    fn add_node(&mut self, node: &str) -> bool;
+    fn add_edge(&mut self, edge: (&str, &str, i32));
     fn contains(&self, node: &str) -> bool {
         self.adjacency_table().get(node).is_some()
     }
@@ -59,10 +91,12 @@ pub trait Graph {
         edges
     }
 }
+
 #[cfg(test)]
 mod test_undirected_graph {
     use super::Graph;
     use super::UndirectedGraph;
+
     #[test]
     fn test_add_edge() {
         let mut graph = UndirectedGraph::new();
